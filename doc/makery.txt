@@ -1,0 +1,114 @@
+*makery.txt* *makery* Manage your makeprg
+
+Author: Ian Emnace <igemnace@gmail.com>
+Repo: https://github.com/igemnace/vim-makery
+License: Same terms as Vim itself (see |license|)
+
+Setup ~
+                                                                *makery-setup*
+Makery.vim allows you to specify different configurations of |makeprg|,
+|errorformat|, and |compiler| for different projects by indicating them in a
+|Dictionary|, like so:
+>
+  let g:makery_config = {
+  \   "~/src/my-c-project": {
+  \     "lint": {"compiler": "clang-format"},
+  \     "tags": {"makeprg": "ctags -R src"},
+  \     "build": {"compiler": "gcc"}
+  \   },
+  \   "~/src/my-js-project": {
+  \     "lint": {"compiler": "eslint"},
+  \     "tags": {"makeprg": "es-ctags -R src"},
+  \     "build": {"makeprg": "yarn"},
+  \     "test": {"compiler": "jest"}
+  \   }
+  \ }
+<
+                                                             *g:makery_config*
+The global object |g:makery_config| should contain paths as keys. Ideally,
+these paths should lead to your projects' root directories. You can use globs
+in the path, e.g. `~/src/my-c-project/*`, but be aware that |:make| almost
+always relies on the current working directory to work properly.
+
+                                                          *makery-path-config*
+Each path is provided with its own |Dictionary|. This dict will be a map from
+command names to sets of |makeprg|, |errorformat|, and/or |compiler| options.
+
+You can use any command name you wish for these options. Ideally, these
+command names should be descriptive of what options it sets up, e.g. "lint",
+"build", or "deploy".
+
+Each command is, yet again, provided with its own |Dictionary|. This time, the
+only relevant keys are "compiler", "makeprg", and "errorformat".
+
+                                            *makery-compiler* *makery-makeprg*
+You can specify a |compiler| or a |makeprg|, but not both at the same time. If
+a "compiler" key is detected, the rest are ignored.
+
+                                                          *makery-errorformat*
+The "errorformat" key is optional. Ideally, you'll want to set this to the
+proper |errorformat| that corresponds to your given |makeprg|.
+
+Even better would be writing your own |compiler| plugin to group the two
+together (see |write-compiler-plugin|). It's very simple; not at all as hard
+as it sounds!
+
+JSON Support ~
+                                                                 *makery-json*
+If you have Vim 8 or higher, makery.vim will be able to read JSON files for
+its config in addition to |g:makery_config|.
+
+Upon startup, makery.vim will search for a `.makery.json` file in the current
+working directory and source it if it exists. This is a handy way of
+specifying a |makery-path-config| for your project, since you won't have to
+hardcode a path in your vimrc.
+
+The content of `.makery.json` should be in the same format as described for
+|makery-path-config|. For example, `~/src/my-js-project` might look like this:
+>
+  {
+    "lint": {"compiler": "eslint"},
+    "tags": {"makeprg": "es-ctags -R src"},
+    "build": {"makeprg": "yarn"},
+    "test": {"compiler": "jest"}
+  }
+<
+
+Usage ~
+                                              *makery-usage* *makery-commands*
+After setting up, you can call any of your defined commands via the :M prefix.
+
+For example, let's say I have the following |g:makery_config|:
+>
+  let g:makery_config = {
+  \   "~/src/my-js-project": {
+  \     "lint": {"compiler": "eslint"},
+  \     "build": {"makeprg": "yarn"}
+  \   }
+  \ }
+<
+Opening Vim from `~/src/my-js-project` will provide me with the :Mlint
+command, which will run |:make| with "eslint" as my |compiler|. I can lint a
+single file with :Mlint %, or lint the entire project with :Mlint *.
+
+After hacking a bit on my code and fixing my lint errors, I'm ready to build
+my dist files. I can run the :Mbuild command, which will run |:make|, but this
+time it will use "yarn" as its |makeprg|.
+
+Async support ~
+                                                  *makery-Make* *makery-async*
+Makery.vim does not attempt to implement an async version of |:make|, since so
+many plugins out there already do this.
+
+Instead, makery.vim tries to use a :Make command, if one exists. This means
+installing, say, tpope's dispatch.vim alongside makery.vim will be enough for
+your :M commands to run async.
+
+If you use a different plugin, you may look up its documentation for a clue on
+how to provide a :Make command. For example, I use skywind3000's asyncrun.vim,
+so I have the following line in my vimrc:
+>
+  command! -nargs=* Make AsyncRun -program=make <args>
+<
+
+vim:tw=78:et:ft=help:norl:
