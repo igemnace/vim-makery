@@ -13,7 +13,7 @@ This plugin is designed to be a companion to `:make`.
 
 I made this plugin because I was tired of having to change my `makeprg` or
 `compiler` every time I wanted to run a different task. Switching between
-`:compiler eslint` and `compiler jest` gets old really fast.
+`:compiler eslint` and `:compiler jest` gets old really fast.
 
 Sure, you can map, but it gets harder when you start to work across different
 projects: some use different linters or test runners, some use a Makefile, some
