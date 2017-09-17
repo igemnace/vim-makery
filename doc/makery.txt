@@ -42,12 +42,24 @@ Each command is, yet again, provided with its own |Dictionary|. This time, the
 only relevant keys are "compiler", "makeprg", and "errorformat".
 
                                             *makery-compiler* *makery-makeprg*
-You can specify a |compiler| or a |makeprg|, but not both at the same time. If
-a "compiler" key is detected, the rest are ignored.
+You must specify at least one of "compiler" or "makeprg". If both are
+provided, the |compiler| will be set before the |makeprg|.
+
+This can be useful if you need a certain |compiler| plugin, but you're
+invoking the |makeprg| in a different way, e.g.
+>
+  {
+    "lint": {
+      "compiler": "eslint",
+      "makeprg": "yarn lint"
+    }
+  }
+<
 
                                                           *makery-errorformat*
-The "errorformat" key is optional. Ideally, you'll want to set this to the
-proper |errorformat| that corresponds to your given |makeprg|.
+The "errorformat" key is optional, and will be ignored if you specify a
+|compiler|. Ideally, you'll want to set this to the proper |errorformat| that
+corresponds to your given |makeprg|.
 
 Even better would be writing your own |compiler| plugin to group the two
 together (see |write-compiler-plugin|). It's very simple; not at all as hard
