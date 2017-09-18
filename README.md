@@ -72,6 +72,9 @@ let g:makery_config = {
 \ }
 ```
 
+As always in Vim, the docs are the authoritative source. Read `:help makery` for
+a more detailed description.
+
 You can also specify each project's configuration within its own `.makery.json`
 file, like so:
 
@@ -83,13 +86,16 @@ file, like so:
 }
 ```
 
-Read `:help makery-setup` for a more detailed description.
+Note that JSON support requires Vim 8 or higher (since these versions offer JSON
+support out of the box). Read `:help makery-json` for a bit more detail.
 
 ## Usage
 
 After setting up your Makery commands (either through `g:makery_config` or a
 `.makery.json` file), you can simply call the commands through the `:M` prefix,
 e.g. `:Mlint` or `:Mcompile`.
+
+Read `:help makery-usage` for a bit more detail.
 
 ## Other Usage
 

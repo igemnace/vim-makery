@@ -1,11 +1,11 @@
-*makery.txt* *makery* Manage your makeprg
+*makery.txt* Manage your makeprg
 
 Author: Ian Emnace <igemnace@gmail.com>
 Repo: https://github.com/igemnace/vim-makery
 License: Same terms as Vim itself (see |license|)
 
 Setup ~
-                                                                *makery-setup*
+                                                       *makery* *makery-setup*
 Makery.vim allows you to specify different configurations of |makeprg|,
 |errorformat|, and |compiler| for different projects by indicating them in a
 |Dictionary|, like so:
