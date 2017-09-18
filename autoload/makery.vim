@@ -42,7 +42,7 @@ function! makery#CreateCompileCommand(command, compiler, makeprg) abort
   let l:command_name = 'M' . a:command
 
   execute 'command! -bang -nargs=*' l:command_name
-    \ 'call makery#Compile("' . a:compiler . '", "' . a:makeprg . '" <q-bang>, <q-args>)'
+    \ 'call makery#Compile("' . a:compiler . '", "' . a:makeprg . '", <q-bang>, <q-args>)'
 endfunction
 
 " set up :B commands according to the given 'config'
