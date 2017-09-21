@@ -34,7 +34,7 @@ function! s:CreatePrefixedCommand(command, options) abort
   let l:command_name = 'M' . a:command
   
   if (exists(':' . l:command_name))
-      echom 'The command :' . l:command_name . ' is already defined elsewhere.'
+      echom 'makery.vim: Existing command :' . l:command_name . '. Skipping.'
       return
   endif
 
