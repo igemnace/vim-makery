@@ -12,7 +12,7 @@ endfunction
 " sets compiler, makeprg, and errorformat based on the given 'options' dict
 function! s:ApplyOptions(options) abort
   if has_key(a:options, 'compiler')
-    execute "compiler" get(a:options, 'compiler')
+    execute 'compiler' get(a:options, 'compiler')
   endif
 
   if has_key(a:options, 'makeprg')
@@ -33,15 +33,15 @@ endfunction
 function! s:CreateCommand(command, options) abort
   let l:command_name = 'M' . a:command
   
-  if (exists(":" . l:command_name))
-      echom "The command :" . l:command_name . " is already defined elsewhere."
+  if (exists(':' . l:command_name))
+      echom 'The command :' . l:command_name . ' is already defined elsewhere.'
   endif
 
   execute 'command! -bang -nargs=* -complete=file' l:command_name
     \ 'call makery#Make(' . string(a:options) . ', <q-bang>, <q-args>)'
 endfunction
 
-" set up :B commands according to the given 'config'
+" set up :M commands according to the given 'config'
 function! makery#Setup(config) abort
   for [l:command, l:options] in items(a:config)
     call s:CreateCommand(l:command, l:options)
