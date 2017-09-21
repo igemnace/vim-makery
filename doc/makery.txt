@@ -6,8 +6,8 @@ License: Same terms as Vim itself (see |license|)
 
 Setup ~
                                                        *makery* *makery-setup*
-Makery.vim allows you to specify different configurations of |makeprg|,
-|errorformat|, and |compiler| for different projects by indicating them in a
+Makery.vim allows you to specify different configurations of 'makeprg',
+'errorformat', and |compiler| for different projects by indicating them in a
 |Dictionary|, like so:
 >
   let g:makery_config = {
@@ -32,7 +32,7 @@ always relies on the current working directory to work properly.
 
                                                           *makery-path-config*
 Each path is provided with its own |Dictionary|. This dict will be a map from
-command names to sets of |makeprg|, |errorformat|, and/or |compiler| options.
+command names to sets of 'makeprg', 'errorformat', and/or |compiler| options.
 
 You can use any command name you wish for these options. Ideally, these
 command names should be descriptive of what options it sets up, e.g. "lint",
@@ -43,10 +43,10 @@ only relevant keys are "compiler", "makeprg", and "errorformat".
 
                                             *makery-compiler* *makery-makeprg*
 You must specify at least one of "compiler" or "makeprg". If both are
-provided, the |compiler| will be set before the |makeprg|.
+provided, the |compiler| will be set before the 'makeprg'.
 
 This can be useful if you need a certain |compiler| plugin, but you're
-invoking the |makeprg| in a different way, e.g.
+invoking the 'makeprg' in a different way, e.g.
 >
   {
     "lint": {
@@ -58,8 +58,8 @@ invoking the |makeprg| in a different way, e.g.
 
                                                           *makery-errorformat*
 The "errorformat" key is optional, and will be ignored if you specify a
-|compiler|. Ideally, you'll want to set this to the proper |errorformat| that
-corresponds to your given |makeprg|.
+|compiler|. Ideally, you'll want to set this to the proper 'errorformat' that
+corresponds to your given 'makeprg'.
 
 Even better would be writing your own |compiler| plugin to group the two
 together (see |write-compiler-plugin|). It's very simple; not at all as hard
@@ -105,7 +105,8 @@ single file with :Mlint %, or lint the entire project with :Mlint *.
 
 After hacking a bit on my code and fixing my lint errors, I'm ready to build
 my dist files. I can run the :Mbuild command, which will run |:make|, but this
-time it will use "yarn" as its |makeprg|.
+time it will use "yarn" as its 'makeprg'.
+
                                                    *makery-overwrite-existing*
 Makery.vim respects existing commands, so if you have the following
 imaginary |g:makery_config|:
