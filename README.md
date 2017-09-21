@@ -97,6 +97,13 @@ e.g. `:Mlint` or `:Mcompile`.
 
 Read `:help makery-usage` for a bit more detail.
 
+In case you already have an existing command with the same name, you can still
+access the commands through the full `:Makery` form, e.g. `:Makery lint` or
+`:Makery compile`.
+
+Read `:help makery-overwrite-existing` and `:help makery-:Makery` for a bit more
+detail.
+
 ## Other Usage
 
 ### Async Support

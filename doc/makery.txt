@@ -106,6 +106,29 @@ single file with :Mlint %, or lint the entire project with :Mlint *.
 After hacking a bit on my code and fixing my lint errors, I'm ready to build
 my dist files. I can run the :Mbuild command, which will run |:make|, but this
 time it will use "yarn" as its |makeprg|.
+                                                   *makery-overwrite-existing*
+Makery.vim respects existing commands, so if you have the following
+imaginary |g:makery_config|:
+>
+  let g:makery_config = {
+  \   "~/src/my-test-project": {
+  \     "aps": {"makeprg": "aps"},
+  \   }
+  \ }
+<
+And if you already have a `:Maps` command (either from a plugin or from your
+own vimrc), Makery.vim will not clobber that existing map. The following
+warning will also be echoed to the screen:
+>
+  makery.vim: Existing command :Maps. Skipping.
+<
+
+                                                              *makery-:Makery*
+In the example above, you can still access your "aps" 'makeprg' by doing the
+full form of the command: :Makery aps.
+
+In general, you can access any of your defined commands with :Makery
+{subcommand}. :Makery is Tab-completable for your convenience.
 
 Async support ~
                                                   *makery-Make* *makery-async*
