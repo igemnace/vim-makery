@@ -47,8 +47,8 @@ it!
 
 ## Installation
 
-Copy the contents of `plugin` and `autoload` to `~/.vim` on UNIX-like systems,
-or install with your favorite plugin manager.
+Copy the contents of `plugin`, `autoload`, `doc` to `~/.vim` on UNIX-like
+systems, or install with your favorite plugin manager.
 
 ## Setup
 
