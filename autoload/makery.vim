@@ -11,23 +11,36 @@ endfunction
 
 " sets compiler, makeprg, and errorformat based on the given 'options' dict
 function! s:ApplyOptions(options) abort
+  let l:save_options = {}
+
   if has_key(a:options, 'compiler')
     execute 'compiler' get(a:options, 'compiler')
   endif
 
   if has_key(a:options, 'makeprg')
+    let l:save_options.makeprg = &l:makeprg
     let &l:makeprg = get(a:options, 'makeprg')
   endif
 
   if has_key(a:options, 'errorformat') && !has_key(a:options, 'compiler')
+    let l:save_options.errorformat = &l:errorformat
     let &l:errorformat = get(a:options, 'errorformat')
   endif
+
+  return l:save_options
 endfunction
 
-" applies 'options', then calls the make command
+function! s:RestoreOptions(options) abort
+  for [l:option, l:value] in items(a:options)
+    execute 'let &l:' . l:option '= "' . l:value . '"'
+  endfor
+endfunction
+
+" applies 'options', calls the make command, then restores applied options
 function! makery#Make(options, bang, args) abort
-  call s:ApplyOptions(a:options)
+  let l:save_options = s:ApplyOptions(a:options)
   call s:ExecuteMake(a:bang, a:args)
+  call s:RestoreOptions(l:save_options)
 endfunction
 
 function! s:CreatePrefixedCommand(command, options) abort
