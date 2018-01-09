@@ -62,15 +62,18 @@ endfunction
 function! s:DetectJSON() abort
   let l:normalized_cwd = s:NormalizePath(getcwd())
 
-  if s:Has(l:normalized_cwd, g:makery_json_filename)
-    try
-      let l:json_path = l:normalized_cwd . '/' . g:makery_json_filename
-      let l:path_config = json_decode(join(readfile(l:json_path)))
+  while !s:Has(l:normalized_cwd, g:makery_json_filename)
+    let l:normalized_cwd = fnamemodify(l:normalized_cwd, ':h')
+  endwhile
+  if l:normalized_cwd !#= '/'
+  try
+    let l:json_path = l:normalized_cwd . '/' . g:makery_json_filename
+    let l:path_config = json_decode(join(readfile(l:json_path)))
 
-      call makery#Setup(l:path_config)
-    catch
-      echom 'makery.vim: Invalid JSON file detected.'
-    endtry
+    call makery#Setup(l:path_config)
+  catch
+    echom 'makery.vim: Invalid JSON file detected.'
+  endtry
   endif
 endfunction
 """ END FUNCTIONS }}}
