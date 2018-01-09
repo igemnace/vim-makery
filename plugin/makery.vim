@@ -65,6 +65,7 @@ function! s:DetectJSON() abort
   while !s:Has(l:normalized_cwd, g:makery_json_filename)
     if l:normalized_cwd =# '/'
         return
+    endif
     let l:normalized_cwd = fnamemodify(l:normalized_cwd, ':h')
   endwhile
   try
@@ -75,7 +76,6 @@ function! s:DetectJSON() abort
   catch
     echom 'makery.vim: Invalid JSON file detected.'
   endtry
-  endif
 endfunction
 """ END FUNCTIONS }}}
 
