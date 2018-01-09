@@ -63,7 +63,7 @@ function! s:DetectJSON() abort
   let l:normalized_cwd = s:NormalizePath(getcwd())
 
   while !s:Has(l:normalized_cwd, g:makery_json_filename)
-    if l:normalized_cwd =# '/'
+    if l:normalized_cwd ==# '/'
         return
     endif
     let l:normalized_cwd = fnamemodify(l:normalized_cwd, ':h')
