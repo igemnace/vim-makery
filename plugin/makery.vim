@@ -60,7 +60,7 @@ endfunction
 
 " checks if makery JSON config file exists in current working directory
 function! s:DetectJSON() abort
-  let l:normalized_cwd = s:NormalizePath(getcwd())
+  let l:normalized_cwd = s:NormalizePath(resolve(expand('%:p')))
 
   while !s:Has(l:normalized_cwd, g:makery_json_filename)
     if l:normalized_cwd ==# '/'
@@ -88,7 +88,9 @@ endfunction
 
 augroup Makery
   autocmd!
-  autocmd BufEnter,BufNewFile * call s:Detect()
+  autocmd BufRead,BufNewFile * if &buftype !~# 'nofile\|quickfix' |
+    \ call s:Detect() |
+    \ endif
 augroup END
 
 " vim:fdm=marker
