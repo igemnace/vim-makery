@@ -51,18 +51,18 @@ function! s:CreatePrefixedCommand(command, options) abort
       return
   endif
 
-  execute 'command! -bang -nargs=* -complete=file' l:command_name
+  execute 'command! -buffer -bang -nargs=* -complete=file' l:command_name
     \ 'call makery#Make(' . string(a:options) . ', <q-bang>, <q-args>)'
 endfunction
 
 function! s:CreateMainCommand() abort
-  command! -bang -nargs=+ -complete=customlist,makery#CmdCompletion
+  command! -buffer -bang -nargs=+ -complete=customlist,makery#CmdCompletion
     \ Makery call makery#ReceiveMakeryArgs(<q-bang>, <f-args>)
 endfunction
 
 " set up :M commands according to the given 'config'
 function! makery#Setup(config) abort
-  let g:makery_registry = extend(get(g:, 'makery_registry', {}), a:config)
+  let b:makery_registry = extend(get(b:, 'makery_registry', {}), a:config)
 
   call s:CreateMainCommand()
   for [l:command, l:options] in items(a:config)
@@ -71,13 +71,13 @@ function! makery#Setup(config) abort
 endfunction
 
 function! makery#CmdCompletion(ArgLead, ...) abort
-  let l:makery_registry = get(g:, 'makery_registry', {})
+  let l:makery_registry = get(b:, 'makery_registry', {})
 
   return filter(keys(l:makery_registry), 'v:val =~? "' . a:ArgLead . '"')
 endfunction
 
 function! makery#ReceiveMakeryArgs(bang, command, ...) abort
-  let l:options = get(g:makery_registry, a:command)
+  let l:options = get(b:makery_registry, a:command)
   let l:command_args = join(a:000[1:])
 
   call makery#Make(l:options, a:bang, l:command_args)

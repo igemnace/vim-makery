@@ -77,11 +77,18 @@ function! s:DetectJSON() abort
     echom 'makery.vim: Invalid JSON file detected.'
   endtry
 endfunction
+
+function! s:Detect() abort
+  if v:version >= 800 || exists('*json_decode')
+    call s:DetectJSON()
+  endif
+  call s:DetectGlobalConfig()
+endfunction
 """ END FUNCTIONS }}}
 
-if v:version >= 800 || exists('*json_decode')
-  call s:DetectJSON()
-endif
-call s:DetectGlobalConfig()
+augroup Makery
+  autocmd!
+  autocmd BufEnter,BufNewFile * call s:Detect()
+augroup END
 
 " vim:fdm=marker
