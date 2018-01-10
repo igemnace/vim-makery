@@ -78,6 +78,13 @@ function! s:DetectJSON() abort
   endtry
 endfunction
 
+function! s:DetectProjectionist() abort
+  for [l:root, l:value] in projectionist#query('makery')
+    call makery#Setup(l:value)
+    break
+  endfor
+endfunction
+
 function! s:Detect() abort
   if v:version >= 800 || exists('*json_decode')
     call s:DetectJSON()
@@ -91,6 +98,7 @@ augroup Makery
   autocmd BufRead,BufNewFile * if &buftype !~# 'nofile\|quickfix' |
     \ call s:Detect() |
     \ endif
+  autocmd User ProjectionistActivate call s:DetectProjectionist()
 augroup END
 
 " vim:fdm=marker
