@@ -60,22 +60,26 @@ endfunction
 
 " checks if makery JSON config file exists in current working directory
 function! s:DetectJSON() abort
-  let l:normalized_cwd = s:NormalizePath(resolve(expand('%:p')))
+  let l:start_path = s:NormalizePath(resolve(expand('%:p')))
 
-  while !s:Has(l:normalized_cwd, g:makery_json_filename)
-    if l:normalized_cwd ==# '/'
+  let l:root = l:start_path
+  let l:previous = ""
+  while l:root !=# l:previous
+    if s:Has(l:root, g:makery_json_filename)
+      try
+        let l:json_path = l:root . '/' . g:makery_json_filename
+        let l:path_config = json_decode(join(readfile(l:json_path)))
+
+        call makery#Setup(l:path_config)
         return
+      catch
+        echom 'makery.vim: Invalid JSON file detected.'
+      endtry
     endif
-    let l:normalized_cwd = fnamemodify(l:normalized_cwd, ':h')
-  endwhile
-  try
-    let l:json_path = l:normalized_cwd . '/' . g:makery_json_filename
-    let l:path_config = json_decode(join(readfile(l:json_path)))
 
-    call makery#Setup(l:path_config)
-  catch
-    echom 'makery.vim: Invalid JSON file detected.'
-  endtry
+    let l:previous = l:root
+    let l:root = fnamemodify(l:previous, ':h')
+  endwhile
 endfunction
 
 function! s:DetectProjectionist() abort
