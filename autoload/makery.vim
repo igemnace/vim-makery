@@ -36,6 +36,12 @@ function! s:RestoreOptions(options) abort
   endfor
 endfunction
 
+function! s:debug(msg) abort
+  if get(g:, 'makery_debug')
+      echom a:msg
+  endif
+endfunction
+
 " applies 'options', calls the make command, then restores applied options
 function! makery#Make(options, bang, args) abort
   let l:save_options = s:ApplyOptions(a:options)
@@ -45,9 +51,9 @@ endfunction
 
 function! s:CreatePrefixedCommand(command, options) abort
   let l:command_name = 'M' . a:command
-  
+
   if (exists(':' . l:command_name))
-      echom 'makery.vim: Existing command :' . l:command_name . '. Skipping.'
+      call s:debug('makery.vim: Existing command :' . l:command_name . '. Skipping.')
       return
   endif
 
