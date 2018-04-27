@@ -89,6 +89,31 @@ file, like so:
 Note that JSON support requires Vim 8 or higher (since these versions offer JSON
 support out of the box). Read `:help makery-json` for a bit more detail.
 
+You can also specify configuration within your `.projections.json` if you use
+[tpope's vim-projectionist](https://github.com/tpope/vim-projectionist), like
+so:
+
+```json
+{
+  "src/*.js": {
+    "type": "js",
+    "makery": {
+      "lint": {"compiler": "eslint"},
+      "tags": {"makeprg": "es-ctags -R src"},
+      "build": {"makeprg": "yarn build"},
+      "test": {"compiler": "jest"}
+    }
+  },
+  "scripts/*": {
+    "type": "script",
+    "makery": {
+      "lint": {"compiler": "shellcheck"},
+      "build": {"makeprg": "make"}
+    }
+  }
+}
+```
+
 ## Usage
 
 After setting up your Makery commands (either through `g:makery_config` or a

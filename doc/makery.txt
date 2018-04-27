@@ -76,13 +76,42 @@ specifying a |makery-path-config| for your project, since you won't have to
 hardcode a path in your vimrc.
 
 The content of `.makery.json` should be in the same format as described for
-|makery-path-config|. For example, `~/src/my-js-project` might look like this:
+|makery-path-config|. For example, `~/src/my-js-project/.makery.json` might
+look like this:
 >
   {
     "lint": {"compiler": "eslint"},
     "tags": {"makeprg": "es-ctags -R src"},
-    "build": {"makeprg": "yarn"},
+    "build": {"makeprg": "yarn build"},
     "test": {"compiler": "jest"}
+  }
+<
+
+Projectionist support ~
+                                                        *makery-projectionist*
+If you're using tpope's vim-projectionist plugin, you likely already have a
+`.projections.json` in your projects. In this case, you can opt to put your
+Makery config under a "makery" key in your projections, in the same format as
+described for |makery-path-config|. For example,
+`~/src/my-js-project/.projections.json` might look like this:
+>
+  {
+    "src/*.js": {
+      "type": "js",
+      "makery": {
+        "lint": {"compiler": "eslint"},
+        "tags": {"makeprg": "es-ctags -R src"},
+        "build": {"makeprg": "yarn build"},
+        "test": {"compiler": "jest"}
+      }
+    },
+    "scripts/*": {
+      "type": "script",
+      "makery": {
+        "lint": {"compiler": "shellcheck"},
+        "build": {"makeprg": "make"}
+      }
+    }
   }
 <
 
@@ -118,11 +147,7 @@ imaginary |g:makery_config|:
   \ }
 <
 And if you already have a `:Maps` command (either from a plugin or from your
-own vimrc), Makery.vim will not clobber that existing map. The following
-warning will also be echoed to the screen:
->
-  makery.vim: Existing command :Maps. Skipping.
-<
+own vimrc), Makery.vim will not clobber that existing map.
 
                                                               *makery-:Makery*
 In the example above, you can still access your "aps" 'makeprg' by doing the
