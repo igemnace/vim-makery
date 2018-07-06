@@ -1,12 +1,16 @@
 " returns Make if such a command exists, to allow for async
-function! s:GetMakeCommand() abort
-  return exists(':Make') == 2 ? 'Make' : 'make'
+function! s:GetMakeCommand(local) abort
+  if a:local
+    return exists(':LMake') == 2 ? 'LMake' : 'lmake'
+  else
+    return exists(':Make') == 2 ? 'Make' : 'make'
+  endif
 endfunction
 
 " executes :make/:Make with the given 'bang' and 'args'
-function! s:ExecuteMake(bang, args) abort
-  let l:make_command = s:GetMakeCommand() . a:bang
-  execute s:GetMakeCommand() a:args
+function! s:ExecuteMake(bang, local, args) abort
+  let l:make_command = s:GetMakeCommand(a:local) . a:bang
+  execute l:make_command a:args
 endfunction
 
 " sets compiler, makeprg, and errorformat based on the given 'options' dict
@@ -43,27 +47,36 @@ function! s:debug(msg) abort
 endfunction
 
 " applies 'options', calls the make command, then restores applied options
-function! makery#Make(options, bang, args) abort
+function! makery#Make(options, bang, local, args) abort
   let l:save_options = s:ApplyOptions(a:options)
-  call s:ExecuteMake(a:bang, a:args)
+  call s:ExecuteMake(a:bang, a:local, a:args)
   call s:RestoreOptions(l:save_options)
 endfunction
 
 function! s:CreatePrefixedCommand(command, options) abort
   let l:command_name = 'M' . a:command
+  let l:lcommand_name = 'LM' . a:command
 
-  if (exists(':' . l:command_name))
-      call s:debug('makery.vim: Existing command :' . l:command_name . '. Skipping.')
-      return
+  if exists(':' . l:command_name)
+    call s:debug('makery.vim: Existing command :' . l:command_name . '. Skipping.')
+  else
+    execute 'command! -buffer -bang -nargs=* -complete=file' l:command_name
+      \ 'call makery#Make(' . string(a:options) . ', <q-bang>, 0, <q-args>)'
+  endif
+  if exists(':' . l:lcommand_name)
+    call s:debug('makery.vim: Existing command :' . l:lcommand_name . '. Skipping.')
+  else
+    execute 'command! -buffer -bang -nargs=* -complete=file' l:lcommand_name
+      \ 'call makery#Make(' . string(a:options) . ', <q-bang>, 1, <q-args>)'
   endif
 
-  execute 'command! -buffer -bang -nargs=* -complete=file' l:command_name
-    \ 'call makery#Make(' . string(a:options) . ', <q-bang>, <q-args>)'
 endfunction
 
 function! s:CreateMainCommand() abort
   command! -buffer -bang -nargs=+ -complete=customlist,makery#CmdCompletion
-    \ Makery call makery#ReceiveMakeryArgs(<q-bang>, <f-args>)
+    \ Makery call makery#ReceiveMakeryArgs(<q-bang>, 0, <f-args>)
+  command! -buffer -bang -nargs=+ -complete=customlist,makery#CmdCompletion
+    \ LMakery call makery#ReceiveMakeryArgs(<q-bang>, 1, <f-args>)
 endfunction
 
 " set up :M commands according to the given 'config'
@@ -82,9 +95,9 @@ function! makery#CmdCompletion(ArgLead, ...) abort
   return filter(keys(l:makery_registry), 'v:val =~? "' . a:ArgLead . '"')
 endfunction
 
-function! makery#ReceiveMakeryArgs(bang, command, ...) abort
+function! makery#ReceiveMakeryArgs(bang, local, command, ...) abort
   let l:options = get(b:makery_registry, a:command)
   let l:command_args = join(a:000[1:])
 
-  call makery#Make(l:options, a:bang, l:command_args)
+  call makery#Make(l:options, a:bang, a:local, l:command_args)
 endfunction
