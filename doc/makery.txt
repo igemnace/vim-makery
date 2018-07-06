@@ -116,7 +116,7 @@ described for |makery-path-config|. For example,
 <
 
 Usage ~
-                                              *makery-usage* *makery-commands*
+                                         *makery-usage* *makery-commands* *:M*
 After setting up, you can call any of your defined commands via the :M prefix.
 
 For example, let's say I have the following |g:makery_config|:
@@ -129,12 +129,20 @@ For example, let's say I have the following |g:makery_config|:
   \ }
 <
 Opening Vim from `~/src/my-js-project` will provide me with the :Mlint
-command, which will run |:make| with "eslint" as my |compiler|. I can lint a
-single file with :Mlint %, or lint the entire project with :Mlint *.
+command, which will run |:make| with "eslint" as my |compiler|. I can now lint
+the entire project with :Mlint *.
 
 After hacking a bit on my code and fixing my lint errors, I'm ready to build
 my dist files. I can run the :Mbuild command, which will run |:make|, but this
 time it will use "yarn" as its 'makeprg'.
+
+                                                        *makery-loclist* *:LM*
+You can also call any command with an :LM prefix instead of :M to run |:lmake|
+instead, which will output to the location list instead of the quickfix list.
+
+Following the above example, I can lint single files with :LMlint % so that I
+can look at lint errors for specific files only in their respective location
+lists.
 
                                                    *makery-overwrite-existing*
 Makery.vim respects existing commands, so if you have the following
@@ -154,22 +162,24 @@ In the example above, you can still access your "aps" 'makeprg' by doing the
 full form of the command: :Makery aps.
 
 In general, you can access any of your defined commands with :Makery
-{subcommand}. :Makery is Tab-completable for your convenience.
+{subcommand}, or :LMakery {subcommand} to make use of the location list.
+:Makery and :LMakery are Tab-completable for your convenience.
 
 Async support ~
                                                   *makery-Make* *makery-async*
 Makery.vim does not attempt to implement an async version of |:make|, since so
 many plugins out there already do this.
 
-Instead, makery.vim tries to use a :Make command, if one exists. This means
-installing, say, tpope's dispatch.vim alongside makery.vim will be enough for
-your :M commands to run async.
+Instead, makery.vim tries to use a :Make command, if one exists (same goes for
+:LMake). This means installing, say, tpope's dispatch.vim alongside makery.vim
+will be enough for your :M commands to run async.
 
 If you use a different plugin, you may look up its documentation for a clue on
-how to provide a :Make command. For example, I use skywind3000's asyncrun.vim,
-so I have the following line in my vimrc:
+how to provide a :Make command. For example, I use hauleth's asyncdo.vim, so I
+have the following lines in my vimrc:
 >
-  command! -nargs=* Make AsyncRun -program=make <args>
+  command! -bang -nargs=* Make call asyncdo#run(<bang>0, &makeprg, <f-args>)
+  command! -bang -nargs=* LMake call asyncdo#lrun(<bang>0, &makeprg, <f-args>)
 <
 
 vim:tw=78:et:ft=help:norl:

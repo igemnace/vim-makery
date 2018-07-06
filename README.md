@@ -120,6 +120,10 @@ After setting up your Makery commands (either through `g:makery_config` or a
 `.makery.json` file), you can simply call the commands through the `:M` prefix,
 e.g. `:Mlint` or `:Mcompile`.
 
+Using the `:LM` prefix instead of `:M` will make use of the location list
+instead of the quickfix list, courtesy of `:lmake`. This can be handy for some
+commands, e.g. `:LMlint %`.
+
 Read `:help makery-usage` for a bit more detail.
 
 In case you already have an existing command with the same name, you can still
@@ -146,7 +150,7 @@ If there are commands that you use frequently across multiple projects, you
 could always just map a key to trigger those commands. For example,
 
 ```vim
-nnoremap <f3> :Mlint %<CR>
+nnoremap <f3> :LMlint %<CR>
 nnoremap <f4> :Mtags<CR>
 nnoremap <f5> :Mbuild<CR>
 ```
